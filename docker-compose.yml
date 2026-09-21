@@ -1,0 +1,21 @@
+services:
+  resolver:
+    build: .
+    image: offline-dep-resolver:latest
+    container_name: offline-dep-resolver
+    ports:
+      - "3000:3000"
+    environment:
+      # Port the API listens on inside the container.
+      PORT: 3000
+      # Optional: cap on backtracking steps for pathological inputs.
+      # RESOLVER_MAX_STEPS: 200000
+      # Optional: max JSON body size accepted by POST /resolve.
+      # MAX_BODY: 10mb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
